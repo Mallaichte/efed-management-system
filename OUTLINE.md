@@ -1,5 +1,7 @@
 # eFed Management System (EMS) Plan
-I have been working on an idea for a match simulator for efeds. I had started coding it in Python as an opportunity to learn the language and it was convenient as I was going for a deliberately retro theme. I've outlined my intentions below.
+I have been working on an idea for a match simulator for efeds. I had started coding it in Python as an opportunity to learn the language and it was convenient as I was going for a deliberately retro theme. Eventually, I'll work on a GUI version(I'll likely change to another language) and I'm considering creating an integrated webapp for fed heads to upload and manage all aspects of their efeds from their own web servers. 
+
+I've outlined some of my intentions below.
 
 ## Goals:
 - **Match Settings**:
