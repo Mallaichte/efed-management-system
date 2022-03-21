@@ -1,0 +1,81 @@
+# eFed Management System (EMS) Plan
+I have been working on an idea for a match simulator for efeds. I had started coding it in Python as an opportunity to learn the language and it was convenient as I was going for a deliberately retro theme. I've outlined my intentions below.
+
+## Goals:
+- **Match Settings**:
+	- It should be possible to choose from various match types
+	- Option to set custom win conditions (including elimination, first fall, x/y falls and must accomplish different types of fall [e.g. must win by pinfall AND submission])
+	- Option to set custom parameters
+	- Can include any number of wrestlers
+		- It should also be possible to assign wrestlers to teams
+		- Any number of teams in match (only capped by number of wrestlers)
+	- Can set prize
+- **Tournaments**:
+	- Tournament tracking previous winners, next round matches
+	- Can set prize
+- **Wrestlers**:
+	- General movelists, signature, finisher
+	- stats
+		- Weight
+		- Height
+		- Hometown
+		- Music
+		- Pronouns (for appropriate output)
+		- Nicknames (commentators will use preferred name most of the time and will occasionally use one of the listed nicknames)
+		- Attributes (Both ATT/DEF[stats out of 20] will be used to factor chance of success rolls on moves momentum & hit points [see Matches] will also be a factor)
+			- ATT/DEF stats:
+				- Striking, Grappling, Aerial, Submission (possibly more)
+			- other stats:
+				- Stamina, Toughness, Power, Hit points (when the hit points drop lower the more likely opponent is to pin or execute submission, also factors in with skill & momentum to measure chance of success)
+	- win/loss record
+	- titles/awards
+	- Interesting facts (background information to be used by colour commentary)
+- **Movelists**:
+	- Can be assigned to multiple wrestlers
+	- Moves describe success, blocked & reversed in many different ways (for colour)
+	- Grouped by required positions
+	- Relevant skill (e.g. Striking)
+	- wow factor on scale 1-20 (how much the audience would respond to move - affects momentum)
+	- Impact (4-15)
+- **Matches**:
+	- Entrance described (using weight, height, hometown, music)
+	- Match starts (Bell rings & commentators indicate match starting)
+	- Wrestler attention (not relevant in 1v1) is based on who they have a rivalry with, who most recently attacked them, who has been hurting them most or who is weakest
+		- Attacking will be most successful in getting a wrestler's attention. This will usually trigger an attention shift to that wrestler.
+		- Attention shifts have a small chance of happening between moves. Rivalry is more likely to draw a wrestler's attention early on. This is followed closely by most recent attacker. When opponent hit points drop the lowest HP opponent is increasingly likely to be targeted.
+	- Momentum is 100,000 divided between all wrestlers
+		- If a match has a predetermined winner, this wrestler will have +25,000 momentum. This will only be applied during checks (+25000 to the winner and +25000 to the total momentum [so we divide by 125000]) so that it will benefit the wrestler without the risk of them losing these bonus points. This ensures that the winner has atleast 20% of the momentum. In turn, this means we can be sure they are executing enough moves to conceivably win the match.
+		- Successful moves draw % of momentum from opponent if reversed opponent gains momentum instead
+		- When rolling a move the calculation for success we calculate the percentage of total momentem the attacker and defender have (momentum/100,000)x100 or momentum/1000. We also take the relevant skill values (ATT/20)x100 vs (DEF/20)x100. When we have these figures, we add the attackers momentum percent to their ATT skill value and divide that figure by the sum of their momentum percent, their ATT skill, the opponent's momentum percent and their opponent's DEF skill value. The result gives us the chance of success. e.g.:
+			- Wrestler A tries to punch Wrestler B
+			- Wrestler A has 70,000 momentum and Wrestler B has 20,000 (Wrestler C has 10,000)
+				- Wrestler A (70,000/100,000)x100=70,000/1000=70
+				- Wrestler B 20,000/1000 = 20
+			- Wrestler A has ATT Striking of 14 and Wrestler B has DEF Striking of 7
+				- (14/20)x100 = 70 vs (7/20)x100 = 35
+			- (70+70)/(90+105)=0.71795... approx 72% chance of success.
+			- We use random.randint(1,100) to get the roll.
+			- A roll of anything upto 72 means success.
+			- 30% of the remaining value is the margin to reverse a move
+			- 14x0.3=8.4 (rounded down) = 8
+			- A roll of 73-81 means move is reversed
+			- Remaining rolls mean a simple block
+	- Moves are attempted with above calculations
+		- success/reversal results in damage/buff calculations
+		- momentum is taken from losing wrestler
+			- amount taken is based on "wow factor" of move (1-20%)
+		- Damage taken is equal to (power/20)ximpact e.g.
+			- Wrestler A succeeds in punching Wrestler B
+			- Punch has wow factor of 1 (momentum as above) and impact of 4
+			- Wrestler A has power of 12
+			- (12/20)x4=2.4 HP taken from Wrestler B
+			- momentum transfer = (Wrestler B's momentum/100) x wowfactor
+			- = (20,000/100)x1 = 200
+			- Wrestler A now has 70,200 and wrestler B has 19,800 momentum
+		- Technical commentator will describe the move's exection from the relevant list
+		- Colour commentator *may* observe state of wrestlers or match following this, potential to "bark" a fact about the wrestler, arena or event also. Barks will be removed from list once said to avoid repetition.
+	- Some moves can transition a wrestler or wrestlers to different areas
+		- Wrestlers will move to the ring (if falls only count in ring) or to wherever their attention is
+	- Submission moves can be attempted at any point in match, but chances increase as opponent hit points drop.
+	- Pinfalls are also more likely to be attempted as hit points drop, but not while HP > 60%.
+	- If the match has a predetermined winner pinfall/submission will always fail against the winner in elimination matches and will always fail when executed by anyone other than the winner in first fall matches or in last fall of multi-fall matches.
