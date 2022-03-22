@@ -25,7 +25,7 @@ with open(homepath+"emstitle","r") as emstitle:
 			else:
 				printline += "\033[0;33;40m"+char
 		print(printline)
-time.sleep(3)
+#time.sleep(3)
 print("\033[0;37;40m") # adds a new line between art and menu, resets fortmatting to no italic/bold/underling;white text;black background [NOTE: avoid using tabs in prints as these seem to reset formatting to terminal defaults and could clash)
 def menu():
 	print("          MAIN  MENU          ")
@@ -41,7 +41,7 @@ def menu():
 	print("           \033[4;37;40mOTHER\033[0;37;40m")
 	print(" X) Exit")
 	print("")
-	time.sleep(1)
+	#time.sleep(1)
 	while True:
 		response =input("\033[0;34;40mPlease select an option: \033[0;37;40m")
 		try:
